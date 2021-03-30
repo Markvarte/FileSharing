@@ -12,12 +12,4 @@
     <br />
     <asp:Label id="lblUploadResult" Runat="server"></asp:Label>
 
-
-   <%-- nr2
-         Image file to upload to the server: <INPUT id="oFile" type="file" runat="server" NAME="oFile">
-         <asp:button id="btnUpload" type="submit" text="Upload" runat="server" OnClick="btnUpload_Click"></asp:button>
-         <asp:Panel ID="frmConfirmation" Visible="False" Runat="server">
-            <asp:Label id="lblUploadResult" Runat="server"></asp:Label>
-         </asp:Panel>--%>
-
 </asp:Content>
