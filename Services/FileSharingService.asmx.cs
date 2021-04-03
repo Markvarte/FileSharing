@@ -37,7 +37,7 @@ namespace fileSharing.Services
             string strFileName;
             string strFilePath;
             string strFolder;
-            String timeStamp = GetTimestamp(DateTime.Now);
+            string timeStamp = GetTimestamp(DateTime.Now);
             strFolder = Server.MapPath($"./{timeStamp}/");
             // Get the name of the file that is posted.
             strFileName = oFile.PostedFile.FileName;
@@ -53,20 +53,20 @@ namespace fileSharing.Services
                 strFilePath = strFolder + strFileName;
                 if (File.Exists(strFilePath))
                 {
-                    // return it to lblUploadResult.Text on client
                     return strFileName + " already exists on the server!";
                 }
                 else
                 {
                     oFile.PostedFile.SaveAs(strFilePath);
-                    // Here code for link!
-                    // return it to lblUploadResult.Text on client
-                    return strFileName + " has been successfully uploaded.";
+                    // For axample http://haring.azurewebsites.net/api/File/202104031232546682
+                    // Comment
+                    var isAzure = Environment.GetEnvironmentVariable("IsAzure") == "1";
+                    var host = isAzure ? "http://haring.azurewebsites.net" : "https://localhost:44399";
+                    return $"{host}/api/File/{timeStamp}";
                 }
             }
             else
             {
-                // return it to lblUploadResult.Text on client
                 return "Click 'Browse' to select the file to upload.";
             }
         }
@@ -76,7 +76,7 @@ namespace fileSharing.Services
             return "Hello World";
         }
 
-        static String GetTimestamp(DateTime value)
+        static string GetTimestamp(DateTime value)
         {
             return value.ToString("yyyyMMddHHmmssffff");
         }

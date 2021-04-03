@@ -1,33 +1,36 @@
-﻿using System;
+﻿using fileSharing.Services;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Web;
 using System.Web.Http;
 
 namespace fileSharing
 {
     public class FileController : ApiController
     {
-        // GET api/<controller>
+        // GET api/<controller>/id
         public HttpResponseMessage Get(string id)
         {
-            string filePath = "C:\\Users\\Natalija\\source\\repos\\fileSharing\\Pages\\202103302218445812\\7GGRMW34Va8.jpg";
-            if (File.Exists(filePath))
+            string fullPath = HttpContext.Current.Server.MapPath($"~\\Pages\\{id}");
+            if (Directory.Exists(fullPath))
             {
-                //byte[] fileContent = File.ReadAllBytes(f.FullName);
-                //FileStream fs = File.Create(f.FullName);
+                string[] fineNamesWithPath = Directory.GetFiles(fullPath);
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
-                var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                // Every Directory contains only 1 file, so get first fineNamesWithPath array item => fineNamesWithPath[0]
+                var stream = new FileStream(fineNamesWithPath[0], FileMode.Open, FileAccess.Read);
                 result.Content = new StreamContent(stream);
                 result.Content.Headers.ContentType =
                     new MediaTypeHeaderValue("application/octet-stream");
                 return result;
             } else
             {
+                // Directory does not exist or path is incorrect.
                 return new HttpResponseMessage(HttpStatusCode.BadRequest);
             }
         }
