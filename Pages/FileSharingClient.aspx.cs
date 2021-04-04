@@ -20,19 +20,20 @@ namespace fileSharing.Pages
         {
             FileSharingService fileSharingService = new FileSharingService();
             lblUploadResult.Text = fileSharingService.CreateSharing(oFile, PasswordBox.Text, TextBox1, TextBox2);
+
             
         }
 
-        public void DownloadFile(string fileName, string dirName)
-        {
-            Response.Clear();
-            Response.ContentType = "application/octet-stream";
-            Response.AppendHeader("Content-Disposition", "filename="
-                + fileName);
-            Response.TransmitFile(Server.MapPath($"~/Pages/{dirName}/")
-                + fileName);
-            Response.End();
-        }
+        //public void DownloadFile(string fileName, string dirName)
+        //{
+        //    Response.Clear();
+        //    Response.ContentType = "application/octet-stream";
+        //    Response.AppendHeader("Content-Disposition", "filename="
+        //        + fileName);
+        //    Response.TransmitFile(Server.MapPath($"~/Pages/{dirName}/")
+        //        + fileName);
+        //    Response.End();
+        //}
 
     }
 }
