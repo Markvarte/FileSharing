@@ -25,6 +25,11 @@ namespace fileSharing
                 // Every Directory contains only 1 file, so get first fineNamesWithPath array item => fineNamesWithPath[0]
                 var stream = new FileStream(fineNamesWithPath[0], FileMode.Open, FileAccess.Read);
                 result.Content = new StreamContent(stream);
+
+                // Set fileName with extension.
+                result.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+                result.Content.Headers.ContentDisposition.FileName = Path.GetFileName($"{fullPath}\\{fineNamesWithPath[0]}");
+
                 result.Content.Headers.ContentType =
                     new MediaTypeHeaderValue("application/octet-stream");
                 return result;
@@ -34,12 +39,6 @@ namespace fileSharing
                 return new HttpResponseMessage(HttpStatusCode.BadRequest);
             }
         }
-
-        //// GET api/<controller>/5
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
 
         // POST api/<controller>
         public void Post([FromBody] string value)
