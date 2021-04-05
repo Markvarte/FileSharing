@@ -40,7 +40,7 @@ namespace fileSharing.Services
             if (eMail.Text != "" && sharingLink.StartsWith("http"))
             {
                 string mailResult = SentMail(eMail, comment, sharingLink);
-                resString = $"Sharing link: {sharingLink}" + $"Sent mail result: {mailResult}";
+                resString = $"Sharing link: {sharingLink}  " + $"Sent mail result: {mailResult}";
             }
 
             LogInfo loginfo = new LogInfo {
