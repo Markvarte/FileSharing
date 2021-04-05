@@ -11,5 +11,7 @@
     <asp:Button ID="Button1" runat="server" Height="38px" OnClick="Button1_Click" Text="Dalīties!" Width="78px" />
     <br />
     <asp:Label id="lblUploadResult" Runat="server"></asp:Label>
+    <asp:GridView ID="dataGridViewLogfile" class="table" runat="server">
+    </asp:GridView>
 
 </asp:Content>

@@ -23,37 +23,35 @@ namespace fileSharing.Services
     // [System.Web.Script.Services.ScriptService]
     public class FileSharingService : System.Web.Services.WebService
     {
-        IPAddress globalIp = null;
         string globalUploadedDate = "";
         string globalUploadedTime = "";
 
         [WebMethod]
-        public string CreateSharing(HtmlInputFile oFile, string pw, TextBox eMail = null, TextBox comment = null)
+        public string[] CreateSharing(HtmlInputFile oFile, string clientIp, string pw, TextBox eMail = null, TextBox comment = null)
         {
             if (pw != "123")
             {
-                return "Wrong password! Access denied.";
+                return new string[] { "Wrong password! Access denied." , ""};
 
             }
             string resString;
             string sharingLink = UploadFile(oFile);
             resString = sharingLink;
-            if (eMail != null && sharingLink.StartsWith("http"))
+            if (eMail.Text != "" && sharingLink.StartsWith("http"))
             {
                 string mailResult = SentMail(eMail, comment, sharingLink);
-                resString = $"Sent mail result: {mailResult}, sharing link: {sharingLink}";
+                resString = $"Sharing link: {sharingLink}" + $"Sent mail result: {mailResult}";
             }
 
             LogInfo loginfo = new LogInfo {
                 sharingLink = sharingLink,
                 uploadedFileName = oFile.PostedFile.FileName,
-                ipAddress = "localhost",
+                ipAddress = clientIp,
                 eMail = eMail.Text,
                 uploadDate = globalUploadedDate,
                 uploadedTime = globalUploadedTime };
-
-            WriteLogInformation(loginfo);
-            return resString;
+            string logFilePath = WriteLogInformation(loginfo);
+            return new string[] { resString, logFilePath };
 
         }
         [WebMethod]
@@ -99,13 +97,14 @@ namespace fileSharing.Services
                 return "Click 'Browse' to select the file to upload.";
             }
         }
-        private void WriteLogInformation(LogInfo logInfo)
+        private string WriteLogInformation(LogInfo logInfo)
         {
             StringBuilder sbuilder = new StringBuilder();
             using (StringWriter sw = new StringWriter(sbuilder))
             {
                 using (XmlTextWriter w = new XmlTextWriter(sw))
                 {
+                    w.WriteProcessingInstruction("xml", "version=\"1.0\"");
                     w.WriteStartElement("LogInfo");
                     w.WriteElementString("sharingLink", logInfo.sharingLink);
                     w.WriteElementString("uploadedFileName", logInfo.uploadedFileName);
@@ -128,6 +127,7 @@ namespace fileSharing.Services
             {
                 w.WriteLine(sbuilder.ToString());
             }
+            return logFilePath;
         }
 
         public string SentMail(TextBox email, TextBox comment, string sharinklink)
@@ -157,6 +157,7 @@ namespace fileSharing.Services
 
         string GetTimestamp(DateTime value)
         {
+            // Getting date & time info for log file wia global variables
             globalUploadedDate = value.ToString("yyyy-MM-dd");
             globalUploadedTime = value.ToString("HH:mm:ss");
             return value.ToString("yyyyMMddHHmmssffff");
